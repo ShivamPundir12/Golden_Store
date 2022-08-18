@@ -10,7 +10,9 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyRegisterState extends State<MyRegister> {
+  var email;
   bool _obscuretext = true;
+  final confirmpassController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   @override
@@ -69,7 +71,7 @@ class _MyRegisterState extends State<MyRegister> {
                 SingleChildScrollView(
                   child: Container(
                     padding: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.4,
+                        top: MediaQuery.of(context).size.height * 0.3,
                         left: 30,
                         right: 30),
                     child: Column(
@@ -125,6 +127,20 @@ class _MyRegisterState extends State<MyRegister> {
                                 borderSide: BorderSide(color: Colors.black),
                                 borderRadius: BorderRadius.circular(25)),
                           ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Email is required";
+                            }
+                            if (!RegExp(
+                                    "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                .hasMatch(value)) {
+                              return 'Please a valid Email';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            email = value;
+                          },
                         ),
                         SizedBox(
                           height: 15,
@@ -135,32 +151,90 @@ class _MyRegisterState extends State<MyRegister> {
                           controller: passwordController,
                           obscureText: _obscuretext,
                           decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black54),
-                                  borderRadius: BorderRadius.circular(25)),
-                              labelStyle: TextStyle(
-                                  color: Colors.grey.shade300,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700),
-                              hintText: "Enter Password",
-                              labelText: "Password",
-                              fillColor: Colors.white38,
-                              filled: true,
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black12),
-                                  borderRadius: BorderRadius.circular(25)),
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  setState(() {});
-                                  _obscuretext = !_obscuretext;
-                                },
-                                child: Icon(
-                                  _obscuretext
-                                      ? CupertinoIcons.eye_fill
-                                      : CupertinoIcons.eye_slash_fill,
-                                  color: Colors.grey.shade200,
-                                ),
-                              )),
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black54),
+                                borderRadius: BorderRadius.circular(25)),
+                            labelStyle: TextStyle(
+                                color: Colors.grey.shade300,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700),
+                            hintText: "Enter Password",
+                            labelText: "Password",
+                            fillColor: Colors.white38,
+                            filled: true,
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black12),
+                                borderRadius: BorderRadius.circular(25)),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {});
+                                _obscuretext = !_obscuretext;
+                              },
+                              child: Icon(
+                                _obscuretext
+                                    ? CupertinoIcons.eye_fill
+                                    : CupertinoIcons.eye_slash_fill,
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Password is required';
+                            }
+                            if (value.trim().length < 6) {
+                              return 'Password must be at least 8 characters in length';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        TextFormField(
+                          autocorrect: true,
+                          cursorColor: Colors.grey.shade200,
+                          controller: confirmpassController,
+                          obscureText: _obscuretext,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black54),
+                                borderRadius: BorderRadius.circular(25)),
+                            labelStyle: TextStyle(
+                                color: Colors.grey.shade100,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700),
+                            hintText: "Confirm your Password",
+                            labelText: "Confirm Password",
+                            fillColor: Colors.white38,
+                            filled: true,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25)),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {});
+                                _obscuretext = !_obscuretext;
+                              },
+                              child: Icon(
+                                _obscuretext
+                                    ? CupertinoIcons.eye_fill
+                                    : CupertinoIcons.eye_slash_fill,
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please re-enter password';
+                            }
+                            print(passwordController.text);
+                            print(confirmpassController.text);
+                            if (passwordController.text !=
+                                confirmpassController.text) {
+                              return "Password does not match";
+                            }
+                            return null;
+                          },
                         ),
                         Padding(
                           padding: EdgeInsets.only(

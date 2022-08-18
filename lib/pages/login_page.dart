@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:sizer/sizer.dart';
 
 class MyLogin extends StatefulWidget {
@@ -11,9 +11,12 @@ class MyLogin extends StatefulWidget {
 }
 
 class _MyLoginState extends State<MyLogin> {
+  final storage = FlutterSecureStorage();
+  var email;
   bool _obscuretext = true;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmpassController = TextEditingController();
 
   @override
   void dispose() {
@@ -83,77 +86,90 @@ class _MyLoginState extends State<MyLogin> {
                     child: Column(
                       children: [
                         TextFormField(
-                            cursorColor: Colors.grey.shade200,
-                            controller: emailController,
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black87),
-                                    borderRadius: BorderRadius.circular(25)),
-                                labelStyle: TextStyle(
-                                    color: Colors.grey.shade200,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700),
-                                hintText: "Enter Username",
-                                labelText: "Username",
-                                fillColor: Colors.white38,
-                                filled: true,
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25)),
-                                suffixIcon: Icon(
-                                  CupertinoIcons.person_alt_circle_fill,
+                          cursorColor: Colors.grey.shade200,
+                          controller: emailController,
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black87),
+                                  borderRadius: BorderRadius.circular(25)),
+                              labelStyle: TextStyle(
                                   color: Colors.grey.shade200,
-                                )),
-                            validator: MultiValidator([
-                              RequiredValidator(
-                                  errorText: 'should not be Empty'),
-                              EmailValidator(errorText: 'Enter a Valid Email')
-                            ])),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700),
+                              hintText: "Enter Email",
+                              labelText: "Email",
+                              fillColor: Colors.white38,
+                              filled: true,
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25)),
+                              suffixIcon: Icon(
+                                CupertinoIcons.person_alt_circle_fill,
+                                color: Colors.grey.shade200,
+                              )),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Email is required";
+                            }
+                            if (!RegExp(
+                                    "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]")
+                                .hasMatch(value)) {
+                              return 'Please a valid Email';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) {
+                            email = value;
+                          },
+
+                          // MultiValidator([
+                          //   RequiredValidator(
+                          //       errorText: 'should not be Empty'),
+                          //   EmailValidator(errorText: 'Enter a Valid Email')
+                          // ])
+                        ),
                         SizedBox(height: 25),
                         TextFormField(
-                            autocorrect: true,
-                            cursorColor: Colors.grey.shade200,
-                            controller: passwordController,
-                            obscureText: _obscuretext,
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.black54),
-                                    borderRadius: BorderRadius.circular(25)),
-                                labelStyle: TextStyle(
-                                    color: Colors.grey.shade100,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700),
-                                hintText: "Enter Password",
-                                labelText: "Password",
-                                fillColor: Colors.white38,
-                                filled: true,
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25)),
-                                suffixIcon: GestureDetector(
-                                  onTap: () {
-                                    setState(() {});
-                                    _obscuretext = !_obscuretext;
-                                  },
-                                  child: Icon(
-                                    _obscuretext
-                                        ? CupertinoIcons.eye_fill
-                                        : CupertinoIcons.eye_slash_fill,
-                                    color: Colors.grey.shade200,
-                                  ),
-                                )
-                                // IconButton(
-                                //     onPressed: () {},
-                                //     color: Colors.grey.shade200,
-                                //     icon: Icon(CupertinoIcons.eye))
-                                ),
-                            validator: MultiValidator([
-                              RequiredValidator(
-                                  errorText: 'should not be Empty'),
-                              MinLengthValidator(6,
-                                  errorText:
-                                      'Password should be atleast 6 character long')
-                            ])),
+                          autocorrect: true,
+                          cursorColor: Colors.grey.shade200,
+                          controller: passwordController,
+                          obscureText: _obscuretext,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black54),
+                                borderRadius: BorderRadius.circular(25)),
+                            labelStyle: TextStyle(
+                                color: Colors.grey.shade100,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700),
+                            hintText: "Enter Password",
+                            labelText: "Password",
+                            fillColor: Colors.white38,
+                            filled: true,
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25)),
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {});
+                                _obscuretext = !_obscuretext;
+                              },
+                              child: Icon(
+                                _obscuretext
+                                    ? CupertinoIcons.eye_fill
+                                    : CupertinoIcons.eye_slash_fill,
+                                color: Colors.grey.shade200,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Password is required';
+                            }
+                            // if (value.trim().length < 6) {
+                            //   return 'Password must be at least 8 characters in length';
+                            // }
+                            return null;
+                          },
+                        ),
                         Padding(
                           padding: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * 0.03),
@@ -172,11 +188,17 @@ class _MyLoginState extends State<MyLogin> {
                               ),
                               onPressed: () async {
                                 try {
-                                  await FirebaseAuth.instance
-                                      .signInWithEmailAndPassword(
-                                          email: emailController.text.trim(),
-                                          password:
-                                              passwordController.text.trim());
+                                  UserCredential userCredential =
+                                      await FirebaseAuth
+                                          .instance
+                                          .signInWithEmailAndPassword(
+                                              email:
+                                                  emailController.text.trim(),
+                                              password: passwordController.text
+                                                  .trim());
+                                  await storage.write(
+                                      key: "email",
+                                      value: userCredential.user!.email);
                                   Navigator.pushReplacementNamed(
                                       context, "/nav");
                                 } on FirebaseAuthException catch (e) {
@@ -219,7 +241,9 @@ class _MyLoginState extends State<MyLogin> {
                                   ),
                                 )),
                             TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.pushNamed(context, "/forgot");
+                                },
                                 child: Text(
                                   "Forgot Password",
                                   style: TextStyle(fontSize: 18),
