@@ -1,4 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:golden_store/models/item_widget.dart';
+
+import '../models/cataloge_model.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -6,10 +12,23 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  loadData() async {
+    final catalogJson = await rootBundle.loadString("assets/json/product.json");
+    final decodedData = jsonDecode(catalogJson);
+    var productsData = decodedData["products"];
+    CatalogModel.items = List.from(productsData)
+        .map<Item>((item) => Item.fromMap(item))
+        .toList();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ignore: unused_local_variable
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Home"),
@@ -17,9 +36,18 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         automaticallyImplyLeading: false,
       ),
-      body: Container(
-        child: Text("HOME"),
-        alignment: Alignment.center,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: (CatalogModel.items.isNotEmpty)
+            ? ListView.builder(
+                itemCount: CatalogModel.items.length,
+                itemBuilder: (context, index) => ItemWidget(
+                  item: CatalogModel.items[index],
+                ),
+              )
+            : Center(
+                child: CircularProgressIndicator(),
+              ),
       ),
     );
   }

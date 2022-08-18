@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:golden_store/Navbar/profile_page.dart';
-
 import 'bucket_page.dart';
 import 'home_page.dart';
 
