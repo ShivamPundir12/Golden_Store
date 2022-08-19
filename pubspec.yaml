@@ -41,6 +41,7 @@ dependencies:
   cloud_firestore: ^3.4.3
   fluttertoast: ^8.0.9
   flutter_secure_storage: ^6.0.0
+  velocity_x: ^3.5.1
 
 
 dev_dependencies:

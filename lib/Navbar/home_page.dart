@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:golden_store/models/item_widget.dart';
 
 import '../models/cataloge_model.dart';
 
@@ -31,19 +30,71 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
-        backgroundColor: Colors.blueAccent.shade400,
-        centerTitle: true,
-        automaticallyImplyLeading: false,
+        title: Text("Catalog App"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: (CatalogModel.items.isNotEmpty)
             ? ListView.builder(
+                itemBuilder: (context, index) {
+                  final item = CatalogModel.items[index];
+                  return Stack(
+                    children: [
+                      Container(
+                        height: 100,
+                        color: Colors.grey.shade200,
+                        child: Image.network(
+                          item.image,
+                          alignment: Alignment(0, -1),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Column(
+                              children: [
+                                Text(
+                                  item.price.toString(),
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 7),
+                        child: Text(
+                          item.desc.toString(),
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ),
+                      // Expanded(
+                      //   flex: 20,
+                      //   child: Container(
+                      //     child: Padding(
+                      //       padding: EdgeInsets.only(
+                      //           top: MediaQuery.of(context).size.height / 7.5),
+                      //       child:
+                      //     ),
+                      //   ),
+                      // ),
+                    ],
+                  );
+                  // Card(
+                  //   clipBehavior: Clip.antiAlias,
+                  //   shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(10)),
+                  //   child: GridTile(
+                  //     child: Image.network(
+                  //       item.image,
+                  //     ),
+                  //   ),
+                  // );
+                },
                 itemCount: CatalogModel.items.length,
-                itemBuilder: (context, index) => ItemWidget(
-                  item: CatalogModel.items[index],
-                ),
               )
             : Center(
                 child: CircularProgressIndicator(),

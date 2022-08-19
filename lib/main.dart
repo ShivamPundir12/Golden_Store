@@ -25,7 +25,7 @@ Future main() async {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/Animated",
+      initialRoute: "/nav",
       routes: {
         '/Animated': (context) => AnimatedPage(),
         '/Profile': (context) => Profile(),

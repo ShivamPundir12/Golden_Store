@@ -9,23 +9,44 @@ class ItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: () {
-          print("${item.name} pressed");
-        },
-        leading: Image.network(item.image),
-        title: Text(item.name),
-        subtitle: Text(item.desc),
-        trailing: Text(
-          "\$${item.price}",
-          textScaleFactor: 1.5,
-          style: TextStyle(
-            color: Colors.deepPurple,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+      child: (CatalogModel.items.isNotEmpty)
+          ? SizedBox(
+              height: 900.0,
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                ),
+                itemBuilder: (context, index) {
+                  final item = CatalogModel.items[index];
+                  return Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: GridTile(
+                        child: GridTile(
+                          child: Image.network(
+                            item.image,
+                            cacheWidth: 100,
+                          ),
+                          footer: Container(
+                            child: Text(
+                              item.price.toString(),
+                              style: TextStyle(color: Colors.black),
+                              textAlign: TextAlign.end,
+                            ),
+                          ),
+                        ),
+                      ));
+                },
+                itemCount: CatalogModel.items.length,
+              ),
+            )
+          : Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 }
